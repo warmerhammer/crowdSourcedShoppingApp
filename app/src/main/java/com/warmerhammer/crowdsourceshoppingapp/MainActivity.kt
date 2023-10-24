@@ -1,18 +1,16 @@
 package com.warmerhammer.crowdsourceshoppingapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -21,13 +19,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
-import com.warmerhammer.crowdsourceshoppingapp.ui.theme.CrowdSourceShoppingAppTheme
-import dagger.hilt.android.AndroidEntryPoint
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.warmerhammer.crowdsourceshoppingapp.ItemView.arguments
 import com.warmerhammer.crowdsourceshoppingapp.homepage.HomePage
 import com.warmerhammer.crowdsourceshoppingapp.itemview.ItemViewPage
+import com.warmerhammer.crowdsourceshoppingapp.ui.theme.CrowdSourceShoppingAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -36,23 +34,35 @@ class MainActivity : ComponentActivity() {
         val viewModel = MainActivityViewModel()
         setContent {
             CrowdSourceShoppingAppTheme {
-                App()
+                App(viewModel)
             }
         }
     }
 }
 
 @Composable
-fun App() {
+fun App(
+    viewModel: MainActivityViewModel
+) {
     val navController = rememberNavController()
+    val currentPage = viewModel.currentpage.collectAsState()
+    Log.i("MainActivity", "Current page 1 is ${currentPage.value}")
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {},
                 backgroundColor = MaterialTheme.colors.background,
                 navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(Icons.Filled.Menu, contentDescription = null)
+                    IconButton(onClick = {
+                        if (currentPage.value != "homescreen") {
+                            navController.navigate("homescreen")
+                            viewModel.setCurrentPage("homescreen")
+                        }
+                    }) {
+                        Icon(
+                            if (currentPage.value == "homescreen") Icons.Outlined.Menu else Icons.Outlined.ArrowBack,
+                            contentDescription = null
+                        )
                     }
                 },
                 actions = {
@@ -161,15 +171,22 @@ fun App() {
                 modifier = Modifier
             ) {
                 composable(HomePage.route) {
-                    HomePage { destinaton, id ->
-                        when(destinaton) {
-                            "ItemView" -> navController.navigate("${ItemView.route}/$id")
-                        }
-                    }
+                    HomePage(
+                        onNavigate = { destinaton, id ->
+                            when (destinaton) {
+                                "ItemView" -> navController.navigate("${ItemView.route}/$id")
+                            }
+                        },
+                        mainActivityViewModel = viewModel
+                    )
                 }
-                composable(route = ItemView.routeWithArgs, arguments = arguments) { backStackEntry ->
+                composable(
+                    route = ItemView.routeWithArgs,
+                    arguments = arguments
+                ) { backStackEntry ->
                     ItemViewPage(
-                        backStackEntry.arguments?.getString("itemId")!!
+                        backStackEntry.arguments?.getString("itemId")!!,
+                        viewModel
                     )
                 }
             }
@@ -182,6 +199,6 @@ fun App() {
 @Composable
 fun DefaultPreview() {
     CrowdSourceShoppingAppTheme {
-        App()
+        App(MainActivityViewModel())
     }
 }

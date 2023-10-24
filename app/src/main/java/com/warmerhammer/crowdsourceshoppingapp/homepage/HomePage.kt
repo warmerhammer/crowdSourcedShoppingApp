@@ -3,23 +3,25 @@ package com.warmerhammer.crowdsourceshoppingapp.homepage
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.magnifier
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.warmerhammer.crowdsourceshoppingapp.GroceryItem
+import com.warmerhammer.crowdsourceshoppingapp.MainActivityViewModel
 import com.warmerhammer.crowdsourceshoppingapp.R
 import com.warmerhammer.crowdsourceshoppingapp.ui.components.ItemCard
 
 @Composable
 fun HomePage(
-    onNavigate : (destination: String, id: String?) -> Unit
+    mainActivityViewModel: MainActivityViewModel = viewModel(),
+    onNavigate: (destination: String, id: String?) -> Unit,
 ) {
+    mainActivityViewModel.setCurrentPage("homescreen")
     LazyColumn(
         Modifier
             .background(color = MaterialTheme.colors.background)
@@ -36,7 +38,7 @@ fun HomePage(
                     name = groceryItems[index].name,
                     image = groceryItems[index].image,
                     price = groceryItems[index].price
-                ){
+                ) {
                     onNavigate("ItemView", "${groceryItems[index].id}")
                 }
             }
