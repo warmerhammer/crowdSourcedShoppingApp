@@ -5,20 +5,18 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
-import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.warmerhammer.crowdsourceshoppingapp.GroceryItem
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.warmerhammer.crowdsourceshoppingapp.MainActivityViewModel
 import com.warmerhammer.crowdsourceshoppingapp.R
 import com.warmerhammer.crowdsourceshoppingapp.homepage.groceryItems
 import com.warmerhammer.crowdsourceshoppingapp.ui.components.ItemCard
@@ -27,10 +25,12 @@ import com.warmerhammer.crowdsourceshoppingapp.ui.components.ItemCard
 @Composable
 fun ItemViewPage(
     GroceryItemID: String,
+    mainActivityViewModel : MainActivityViewModel = viewModel()
 ) {
 
     val density = LocalDensity.current
-    val groceryItem = groceryItems[GroceryItemID.toInt()]
+    val groceryItem = groceryItems[GroceryItemID.toInt() - 1]
+    mainActivityViewModel.setCurrentPage("itemview")
 
     BackdropScaffold(
         scaffoldState = rememberBackdropScaffoldState(initialValue = BackdropValue.Revealed),
@@ -57,7 +57,10 @@ fun ItemViewPage(
                         contentDescription = null
                     )
                 }
-                Row(Modifier.fillMaxWidth().padding(horizontal = 15.dp), horizontalArrangement = Arrangement.Start) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 15.dp), horizontalArrangement = Arrangement.Start) {
                     Text("Comments", fontSize = 11.sp, textAlign = TextAlign.Start, fontStyle = FontStyle(2))
 
                 }
