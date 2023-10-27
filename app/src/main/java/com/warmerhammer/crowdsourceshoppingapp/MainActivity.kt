@@ -1,7 +1,6 @@
 package com.warmerhammer.crowdsourceshoppingapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -13,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,9 +21,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.warmerhammer.crowdsourceshoppingapp.AccountScreen.accountScreenArguments
 import com.warmerhammer.crowdsourceshoppingapp.ItemView.arguments
+import com.warmerhammer.crowdsourceshoppingapp.accountscreen.AccountScreenPage
 import com.warmerhammer.crowdsourceshoppingapp.homepage.HomePage
 import com.warmerhammer.crowdsourceshoppingapp.itemview.ItemViewPage
+import com.warmerhammer.crowdsourceshoppingapp.shoppingcartscreen.ShoppingCartPage
 import com.warmerhammer.crowdsourceshoppingapp.ui.theme.CrowdSourceShoppingAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -46,7 +49,8 @@ fun App(
 ) {
     val navController = rememberNavController()
     val currentPage = viewModel.currentpage.collectAsState()
-    Log.i("MainActivity", "Current page 1 is ${currentPage.value}")
+    val currentPoints = viewModel.currentPoints.collectAsState()
+    val shoppingCartItems = viewModel.shoppingCartItems.collectAsState()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -66,7 +70,29 @@ fun App(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
+
+                    Column(
+                        Modifier.padding(horizontal = 50.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_outline_star_outline_24),
+                            contentDescription = null,
+                            tint = Color.LightGray,
+                            modifier = Modifier.size(25.dp)
+                        )
+                        Text(
+                            text = "${currentPoints.value} / 100",
+                            color = if (currentPoints.value >= 100) MaterialTheme.colors.onSurface else Color.LightGray,
+                            fontSize = 10.sp,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                    IconButton(onClick = {
+                        navController.navigate("shoppingcartscreen")
+                        viewModel.setCurrentPage("shoppingcartscreen")
+                    }) {
                         Column(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -77,7 +103,7 @@ fun App(
                                 tint = MaterialTheme.colors.onSurface
                             )
                             Text(
-                                text = "items: 0",
+                                text = "items: ${shoppingCartItems.value.size}",
                                 color = MaterialTheme.colors.onSurface,
                                 fontSize = 10.sp,
                                 textAlign = TextAlign.Center
@@ -96,7 +122,10 @@ fun App(
                 horizontalArrangement = Arrangement.spacedBy(105.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 content = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+                        navController.navigate("homescreen")
+                        viewModel.setCurrentPage("homescreen")
+                    }) {
                         Column(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -138,7 +167,11 @@ fun App(
                         }
                     }
 
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+                        // TODO: change from dummy account selection
+                        navController.navigate("${AccountScreen.route}/0")
+                        viewModel.setCurrentPage("accountscreen")
+                    }) {
                         Column(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -187,6 +220,22 @@ fun App(
                     ItemViewPage(
                         backStackEntry.arguments?.getString("itemId")!!,
                         viewModel
+                    )
+                }
+                composable(
+                    route = AccountScreen.routeWithArgs,
+                    arguments = accountScreenArguments
+                ) { backStackEntry ->
+                    AccountScreenPage(
+                        accountId = backStackEntry.arguments?.getInt(
+                            "accountId"
+                        )!!,
+                        mainActivityViewModel = viewModel
+                    )
+                }
+                composable(ShoppingCartScreen.route) {
+                    ShoppingCartPage(
+                        mainActivityViewModel = viewModel
                     )
                 }
             }

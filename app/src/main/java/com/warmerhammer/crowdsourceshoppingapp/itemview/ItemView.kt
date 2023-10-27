@@ -40,8 +40,10 @@ fun ItemViewPage(
             ItemCard(
                 name = groceryItem.name,
                 image = groceryItem.image,
-                price = groceryItem.price
-            ) {}
+                price = groceryItem.price,
+                onNavigate = { /*TODO*/ },
+                addItemClick = { mainActivityViewModel.addShoppingCartItem(groceryItem) }
+            )
         },
         frontLayerContent = {
             Column(
