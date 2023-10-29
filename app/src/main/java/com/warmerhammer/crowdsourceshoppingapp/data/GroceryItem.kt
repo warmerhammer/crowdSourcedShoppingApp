@@ -1,4 +1,4 @@
-package com.warmerhammer.crowdsourceshoppingapp
+package com.warmerhammer.crowdsourceshoppingapp.data
 
 data class GroceryItem(
     val name: String,

@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Richard/Documents/CS467/crowdSourcedShoppingApp/app/src/main/res/drawable/ic_baseline_account_circle_24.xml" value="0.1" />
+        <entry key="..\:/Users/Richard/Documents/CS467/crowdSourcedShoppingApp/app/src/main/res/drawable/ic_baseline_add_shopping_cart_24.xml" value="0.1025" />
+        <entry key="..\:/Users/Richard/Documents/CS467/crowdSourcedShoppingApp/app/src/main/res/drawable/ic_outline_add_box_24.xml" value="0.1025" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>

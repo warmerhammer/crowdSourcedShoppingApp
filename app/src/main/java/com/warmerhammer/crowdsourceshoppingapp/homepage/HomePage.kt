@@ -11,9 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.warmerhammer.crowdsourceshoppingapp.GroceryItem
 import com.warmerhammer.crowdsourceshoppingapp.MainActivityViewModel
 import com.warmerhammer.crowdsourceshoppingapp.R
+import com.warmerhammer.crowdsourceshoppingapp.data.GroceryItem
 import com.warmerhammer.crowdsourceshoppingapp.ui.components.ItemCard
 
 @Composable
@@ -37,10 +37,10 @@ fun HomePage(
                 ItemCard(
                     name = groceryItems[index].name,
                     image = groceryItems[index].image,
-                    price = groceryItems[index].price
-                ) {
-                    onNavigate("ItemView", "${groceryItems[index].id}")
-                }
+                    price = groceryItems[index].price,
+                    onNavigate = { onNavigate("ItemView", "${groceryItems[index].id}") },
+                    addItemClick = { mainActivityViewModel.addShoppingCartItem(groceryItems[index]) }
+                )
             }
         }
     }
