@@ -38,9 +38,7 @@ fun ItemViewPage(
         appBar = { /*TODO*/ },
         backLayerContent = {
             ItemCard(
-                name = groceryItem.name,
-                image = groceryItem.image,
-                price = groceryItem.price,
+                groceryItem = groceryItem,
                 onNavigate = { /*TODO*/ },
                 addItemClick = { mainActivityViewModel.addShoppingCartItem(groceryItem) }
             )

@@ -32,3 +32,7 @@ object AccountScreen : ScreenDestination {
 object ShoppingCartScreen : ScreenDestination {
     override val route = "shoppingcartscreen"
 }
+
+object AddProductScreen : ScreenDestination {
+    override val route = "addproductscreen"
+}
