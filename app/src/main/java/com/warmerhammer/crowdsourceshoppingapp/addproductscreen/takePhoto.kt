@@ -22,8 +22,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -42,7 +45,7 @@ import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.warmerhammer.crowdsourceshoppingapp.BuildConfig
 import com.warmerhammer.crowdsourceshoppingapp.data.GroceryItem
-import com.warmerhammer.crowdsourceshoppingapp.homepage.groceryItems
+import com.warmerhammer.crowdsourceshoppingapp.groceryItems
 import java.io.File
 import java.util.Date
 import java.util.Objects
@@ -104,8 +107,11 @@ fun TakePhoto(
 
         if (capturedImageUri.path?.isNotEmpty() == true) {
             val productName = remember { mutableStateOf("") }
+            val productNameTextColor = remember { mutableStateOf(Color.Red) }
             val price = remember { mutableStateOf("") }
             val description = remember { mutableStateOf("") }
+            val storeName = remember { mutableStateOf("") }
+            val storeNameTextColor = remember { mutableStateOf(Color.Red) }
             val scrollState = rememberScrollState()
             Column(
                 Modifier
@@ -123,16 +129,60 @@ fun TakePhoto(
                         alignment = Alignment.Center
                     )
                 }
+
+                Column {
+                    Text(
+                        "Store",
+                        textAlign = TextAlign.Start,
+                        fontSize = 14.sp,
+                        color = storeNameTextColor.value
+                    )
+                    TextField(
+                        value = storeName.value,
+                        onValueChange = {
+                            storeName.value = it
+                            if (storeName.value.isNotEmpty()) {
+                                storeNameTextColor.value = Color.Black
+                            } else {
+                                storeNameTextColor.value = Color.Red
+                            }
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = Color.Transparent,
+                            focusedIndicatorColor = MaterialTheme.colors.primary,
+                            unfocusedIndicatorColor = Color.LightGray,
+                            disabledIndicatorColor = Color.Transparent,
+                            errorIndicatorColor = Color.Transparent,
+                            textColor = MaterialTheme.colors.onBackground,
+                        ),
+                    )
+                }
+
                 Column {
                     Text(
                         "Product Name",
                         textAlign = TextAlign.Start,
                         fontSize = 14.sp,
-                        modifier = Modifier.padding(start = 3.dp, bottom = 7.dp)
+                        color = productNameTextColor.value
                     )
                     TextField(
                         value = productName.value,
-                        onValueChange = { productName.value = it },
+                        onValueChange = {
+                            productName.value = it
+                            if (productName.value.isNotEmpty()) {
+                                productNameTextColor.value = Color.Black
+                            } else {
+                                productNameTextColor.value = Color.Red
+                            }
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = Color.Transparent,
+                            focusedIndicatorColor = MaterialTheme.colors.primary,
+                            unfocusedIndicatorColor = Color.LightGray,
+                            disabledIndicatorColor = Color.Transparent,
+                            errorIndicatorColor = Color.Transparent,
+                            textColor = MaterialTheme.colors.onBackground,
+                        )
                     )
                 }
                 Column {
@@ -140,13 +190,20 @@ fun TakePhoto(
                         "Price",
                         textAlign = TextAlign.Start,
                         fontSize = 14.sp,
-                        modifier = Modifier.padding(start = 3.dp, bottom = 7.dp)
                     )
                     TextField(
                         value = price.value.toString(),
                         placeholder = { Text(text = "0.00") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         onValueChange = { num -> price.value = num },
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = Color.Transparent,
+                            focusedIndicatorColor = MaterialTheme.colors.primary,
+                            unfocusedIndicatorColor = Color.LightGray,
+                            disabledIndicatorColor = Color.Transparent,
+                            errorIndicatorColor = Color.Transparent,
+                            textColor = MaterialTheme.colors.onBackground,
+                        )
                     )
                 }
 
@@ -155,11 +212,18 @@ fun TakePhoto(
                         "Description",
                         textAlign = TextAlign.Start,
                         fontSize = 14.sp,
-                        modifier = Modifier.padding(start = 3.dp, bottom = 7.dp)
                     )
                     TextField(
                         value = description.value,
                         onValueChange = { str -> description.value = str },
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = Color.Transparent,
+                            focusedIndicatorColor = MaterialTheme.colors.primary,
+                            unfocusedIndicatorColor = Color.LightGray,
+                            disabledIndicatorColor = Color.Transparent,
+                            errorIndicatorColor = Color.Transparent,
+                            textColor = MaterialTheme.colors.onBackground,
+                        )
                     )
                 }
 
@@ -169,11 +233,13 @@ fun TakePhoto(
                     horizontalArrangement = Arrangement.Center,
                 ) {
                     Button(
+                        enabled = productName.value.isNotEmpty() && storeName.value.isNotEmpty(),
                         onClick = {
                             val newGroceryItem = GroceryItem(
                                 name = productName.value,
                                 description = description.value,
-                                price = DecimalFormat("#.##").format(price.value.toFloat()).toFloat(),
+                                price = DecimalFormat("#.##").format(price.value.toFloat())
+                                    .toFloat(),
                                 image = capturedImageUri.toString()
                             )
                             groceryItems += newGroceryItem

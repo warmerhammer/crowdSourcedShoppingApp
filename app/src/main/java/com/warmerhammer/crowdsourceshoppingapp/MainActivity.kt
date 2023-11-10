@@ -55,7 +55,7 @@ fun App(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                androidx.compose.material3.Text("Drawer title", modifier = Modifier.padding(16.dp))
+                androidx.compose.material3.Text("Navigation", modifier = Modifier.padding(16.dp))
                 Divider()
                 NavigationDrawerItem(
                     icon = {

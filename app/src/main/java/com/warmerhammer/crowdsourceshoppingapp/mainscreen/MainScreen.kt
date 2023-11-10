@@ -72,7 +72,8 @@ fun MainScreen(
                     }) {
                         Icon(
                             if (currentPage.value == "homescreen") Icons.Outlined.Menu else Icons.Outlined.ArrowBack,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = MaterialTheme.colors.primary
                         )
                     }
                 },
@@ -107,11 +108,11 @@ fun MainScreen(
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_outline_shopping_cart_24),
                                 contentDescription = null,
-                                tint = MaterialTheme.colors.onSurface
+                                tint = MaterialTheme.colors.secondary
                             )
                             Text(
                                 text = "items: ${shoppingCartItems.value.size}",
-                                color = MaterialTheme.colors.onSurface,
+                                color = MaterialTheme.colors.secondary,
                                 fontSize = 10.sp,
                                 textAlign = TextAlign.Center
                             )
@@ -147,11 +148,11 @@ fun MainScreen(
                             Icon(
                                 Icons.Outlined.Home,
                                 contentDescription = null,
-                                tint = MaterialTheme.colors.onSurface,
+                                tint = MaterialTheme.colors.secondary,
                             )
                             Text(
                                 text = "Home",
-                                color = MaterialTheme.colors.onSurface,
+                                color = MaterialTheme.colors.secondary,
                                 fontSize = 10.sp,
                                 textAlign = TextAlign.Center
                             )
@@ -163,8 +164,7 @@ fun MainScreen(
                         onClick = {
                             navController.navigate("addproductscreen")
                             viewModel.setCurrentPage("addproductscreen")
-                        }
-                    ) {
+                        }) {
                         Column(
                             verticalArrangement = Arrangement.spacedBy((-2).dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -172,12 +172,12 @@ fun MainScreen(
                             Icon(
                                 Icons.Outlined.Add,
                                 contentDescription = null,
-                                tint = MaterialTheme.colors.onSurface,
+                                tint = MaterialTheme.colors.secondary,
                                 modifier = Modifier.size(27.dp)
                             )
                             Text(
-                                text = "Add",
-                                color = MaterialTheme.colors.onSurface,
+                                text = "Add Item",
+                                color = MaterialTheme.colors.secondary,
                                 fontSize = 11.sp,
                                 textAlign = TextAlign.Center
                             )
@@ -196,11 +196,11 @@ fun MainScreen(
                             Icon(
                                 Icons.Outlined.AccountCircle,
                                 contentDescription = null,
-                                tint = MaterialTheme.colors.onSurface,
+                                tint = MaterialTheme.colors.secondary,
                             )
                             Text(
                                 text = "Account",
-                                color = MaterialTheme.colors.onSurface,
+                                color = MaterialTheme.colors.secondary,
                                 fontSize = 11.sp,
                                 textAlign = TextAlign.Center
                             )

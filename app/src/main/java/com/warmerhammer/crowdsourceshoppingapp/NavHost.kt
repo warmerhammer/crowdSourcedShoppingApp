@@ -11,6 +11,7 @@ import com.warmerhammer.crowdsourceshoppingapp.addproductscreen.addProductScreen
 import com.warmerhammer.crowdsourceshoppingapp.homepage.HomePage
 import com.warmerhammer.crowdsourceshoppingapp.itemview.ItemViewPage
 import com.warmerhammer.crowdsourceshoppingapp.shoppingcartscreen.ShoppingCartPage
+import com.warmerhammer.crowdsourceshoppingapp.tagscreen.TagScreen
 
 @RequiresApi(Build.VERSION_CODES.N)
 @Composable
@@ -18,7 +19,6 @@ fun NavHost(
     viewModel: MainActivityViewModel,
     navController: NavHostController,
 ) {
-    // Homescreen(navController)
     androidx.navigation.compose.NavHost(
         navController = navController,
         startDestination = HomePage.route,
@@ -29,6 +29,7 @@ fun NavHost(
                 onNavigate = { destinaton, id ->
                     when (destinaton) {
                         "ItemView" -> navController.navigate("${ItemView.route}/$id")
+                        "TagScreen" -> navController.navigate("${TagScreen.route}/$id")
                     }
                 },
                 mainActivityViewModel = viewModel
@@ -41,7 +42,10 @@ fun NavHost(
             ItemViewPage(
                 backStackEntry.arguments?.getString("itemId")!!,
                 viewModel
-            )
+            ) { itemId ->
+                // navigate to TagScreen
+                navController.navigate("${TagScreen.route}/$itemId")
+            }
         }
         composable(
             route = AccountScreen.routeWithArgs,
@@ -64,6 +68,16 @@ fun NavHost(
                 navController.navigate("homescreen")
                 viewModel.setCurrentPage("homescreen")
             }
+        }
+
+        composable(
+            route = TagScreen.routeWithArgs,
+            arguments = ItemView.arguments
+        ) { backStackEntry ->
+            TagScreen(
+                viewModel = viewModel,
+                itemId = backStackEntry.arguments?.getString("itemId")!!
+            )
         }
     }
 

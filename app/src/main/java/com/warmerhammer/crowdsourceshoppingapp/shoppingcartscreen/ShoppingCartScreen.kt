@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -15,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,16 +50,38 @@ fun ShoppingCartPage(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         AsyncImage(
+                            modifier = Modifier.size(50.dp),
                             model = ImageRequest.Builder(LocalContext.current)
                                 .data(currentItem.image).build(),
-                            contentDescription = currentItem.description
+                            contentDescription = currentItem.description,
+                            contentScale = ContentScale.Inside
                         )
                         Text(text = currentItem.name, fontSize = 12.sp)
-                        Text(
-                            text = "$${currentItem.price}",
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.End
-                        )
+                        Column (horizontalAlignment = Alignment.End) {
+                            Row {
+                                Text(
+                                    text = "Best Price: ",
+                                    fontSize = 12.sp,
+                                    textAlign = TextAlign.End,
+                                    color = Color(0xFF77a765)
+                                )
+                                Text(
+                                    text = "$${currentItem.price}",
+                                    fontSize = 12.sp,
+                                    textAlign = TextAlign.End,
+                                    color = Color(0xFF77a765),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                            Row {
+                                Text(
+                                    text = "@ ${currentItem.store}",
+                                    fontSize = 12.sp,
+                                    textAlign = TextAlign.End,
+                                    color = Color(0xFF77a765)
+                                )
+                            }
+                        }
 
                     }
                 }
