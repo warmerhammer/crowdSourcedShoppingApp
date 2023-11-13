@@ -12,7 +12,7 @@ object HomePage : ScreenDestination {
 }
 
 object ItemView : ScreenDestination {
-    override val route = "itemview"
+    override val route = "ItemView"
     const val itemId = "itemId"
     val routeWithArgs = "$route/{$itemId}"
     val arguments = listOf(
@@ -31,4 +31,17 @@ object AccountScreen : ScreenDestination {
 
 object ShoppingCartScreen : ScreenDestination {
     override val route = "shoppingcartscreen"
+}
+
+object AddProductScreen : ScreenDestination {
+    override val route = "addproductscreen"
+}
+
+object TagScreen : ScreenDestination {
+    override val route = "TagScreen"
+    const val itemId = "itemId"
+    val routeWithArgs = "$route/{$itemId}"
+    val arguments = listOf(
+        navArgument(itemId) { type = NavType.StringType }
+    )
 }
