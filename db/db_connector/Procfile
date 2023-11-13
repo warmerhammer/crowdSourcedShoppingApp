@@ -1,0 +1,2 @@
+web: gunicorn db_connector.wsgi:application
+release: ./manage.py migrate --no-input
