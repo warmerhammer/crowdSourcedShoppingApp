@@ -44,6 +44,7 @@ import com.warmerhammer.crowdsourceshoppingapp.data.GroceryItem
 
 @Composable
 fun ItemCard(
+    numberOfComments: Int,
     groceryItem: GroceryItem,
     onNavigate: () -> Unit,
     addItemClick: () -> Unit,
@@ -180,7 +181,9 @@ fun ItemCard(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        IconButton(onClick = {
+                        IconButton(
+                            modifier = Modifier.offset(x = (-5).dp),
+                            onClick = {
                             upvoteItem()
                             upvotes.value += 1
                         }) {
@@ -191,11 +194,14 @@ fun ItemCard(
                             )
                         }
                         Text(
+                            modifier = Modifier.offset(x = (-10).dp),
                             text = "${upvotes.value}",
                             color = MaterialTheme.colors.onBackground,
                             textAlign = TextAlign.Start
                         )
-                        IconButton(onClick = {
+                        IconButton(
+                            modifier = Modifier.offset(x = (-15).dp),
+                            onClick = {
                             downvoteItem()
                             upvotes.value -= 1
                         }) {
@@ -219,7 +225,7 @@ fun ItemCard(
                                     tint = MaterialTheme.colors.onBackground
                                 )
                                 Text(
-                                    text = "0",
+                                    text = "$numberOfComments",
                                     color = MaterialTheme.colors.onBackground,
                                     textAlign = TextAlign.Start
                                 )

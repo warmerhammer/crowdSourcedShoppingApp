@@ -32,16 +32,21 @@ fun HomePage(
     ) {
         items(groceryItems.value.size) { index ->
             val currentItem = groceryItems.value[index]
+            val numberOfComments =
+                mainActivityViewModel.comments.collectAsState().value.filter { comment ->
+                    comment.itemId == currentItem.id
+                }.size
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
                 ItemCard(
+                    numberOfComments = numberOfComments,
                     groceryItem = currentItem,
                     onNavigate = { onNavigate("ItemView", "${currentItem.id}") },
                     addItemClick = { mainActivityViewModel.addShoppingCartItem(currentItem) },
                     upvoteItem = { mainActivityViewModel.upvoteItem(currentItem) },
-                    downvoteItem = { mainActivityViewModel.downvoteItem(currentItem)},
+                    downvoteItem = { mainActivityViewModel.downvoteItem(currentItem) },
                     onAddTag = { onNavigate("TagScreen", "${currentItem.id}") },
                 )
             }
