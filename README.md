@@ -34,6 +34,6 @@ We have included gifs that show different functionality of the app as it evolved
 
 **4**
 
-<img src='crowd_sourced_shopping_app_111123.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='crowd_sourced_shopping_app_111023.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 The gifs were created with [LiceCap](http://www.cockos.com/licecap/).
