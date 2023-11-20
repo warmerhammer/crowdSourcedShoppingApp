@@ -1,5 +1,6 @@
 package com.warmerhammer.crowdsourceshoppingapp.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,8 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,6 +44,7 @@ import com.warmerhammer.crowdsourceshoppingapp.data.GroceryItem
 
 @Composable
 fun ItemCard(
+    numberOfUpVotes: MutableState<Int>,
     numberOfComments: Int,
     groceryItem: GroceryItem,
     onNavigate: () -> Unit,
@@ -53,8 +54,7 @@ fun ItemCard(
     onAddTag: () -> Unit
 ) {
 
-    val upvotes = rememberSaveable { mutableStateOf(groceryItem.upvotes) }
-
+    Log.i("numberOfUpvotes", "${numberOfUpVotes.value}")
     Card(
         backgroundColor = Color.White,
         elevation = 4.dp,
@@ -109,7 +109,7 @@ fun ItemCard(
                     verticalAlignment = Alignment.Top,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Row (
+                    Row(
                         modifier = Modifier.width(260.dp)
                     ) {
                         Text(
@@ -149,9 +149,9 @@ fun ItemCard(
                             .offset(y = (-18).dp),
                         onClick = { onAddTag() }
                     ) {
-                        Row (
+                        Row(
                             modifier = Modifier.padding(end = 3.dp)
-                        ){
+                        ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_baseline_add_24),
                                 contentDescription = null,
@@ -184,9 +184,8 @@ fun ItemCard(
                         IconButton(
                             modifier = Modifier.offset(x = (-5).dp),
                             onClick = {
-                            upvoteItem()
-                            upvotes.value += 1
-                        }) {
+                                upvoteItem()
+                            }) {
                             Icon(
                                 Icons.Outlined.KeyboardArrowUp,
                                 contentDescription = null,
@@ -195,16 +194,15 @@ fun ItemCard(
                         }
                         Text(
                             modifier = Modifier.offset(x = (-10).dp),
-                            text = "${upvotes.value}",
+                            text = "${numberOfUpVotes.value}",
                             color = MaterialTheme.colors.onBackground,
                             textAlign = TextAlign.Start
                         )
                         IconButton(
                             modifier = Modifier.offset(x = (-15).dp),
                             onClick = {
-                            downvoteItem()
-                            upvotes.value -= 1
-                        }) {
+                                downvoteItem()
+                            }) {
                             Icon(
                                 Icons.Outlined.KeyboardArrowDown,
                                 contentDescription = null,
@@ -256,4 +254,5 @@ fun ItemCard(
 
         }
     )
+
 }

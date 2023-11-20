@@ -49,7 +49,7 @@ fun MainScreen(
 ) {
 
     val currentPage = viewModel.currentpage.collectAsState()
-    val currentPoints = viewModel.currentPoints.collectAsState()
+    val masterShopperPoints = viewModel.masterShopperPoints.collectAsState()
     val shoppingCartItems = viewModel.shoppingCartItems.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -85,14 +85,14 @@ fun MainScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_outline_star_outline_24),
+                            painter = painterResource(R.drawable.baseline_star_24),
                             contentDescription = null,
-                            tint = Color.LightGray,
+                            tint = MaterialTheme.colors.secondary,
                             modifier = Modifier.size(25.dp)
                         )
                         Text(
-                            text = "${currentPoints.value} / 100",
-                            color = if (currentPoints.value >= 100) MaterialTheme.colors.onSurface else Color.LightGray,
+                            text = "${masterShopperPoints.value} / 100",
+                            color = if (masterShopperPoints.value >= 100) MaterialTheme.colors.secondary else Color.LightGray,
                             fontSize = 10.sp,
                             textAlign = TextAlign.Center,
                         )
@@ -186,7 +186,7 @@ fun MainScreen(
 
                     IconButton(onClick = {
                         // TODO: change from dummy account selection
-                        navController.navigate("${AccountScreen.route}/0")
+                        navController.navigate(AccountScreen.route)
                         viewModel.setCurrentPage("accountscreen")
                     }) {
                         Column(

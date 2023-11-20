@@ -1,6 +1,12 @@
 package com.warmerhammer.crowdsourceshoppingapp.accountscreen
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -8,6 +14,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -22,14 +29,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.warmerhammer.crowdsourceshoppingapp.MainActivityViewModel
 import com.warmerhammer.crowdsourceshoppingapp.R
-import com.warmerhammer.crowdsourceshoppingapp.data.Account
 import com.warmerhammer.crowdsourceshoppingapp.utils.ImagePicker
 
 @Composable
-fun AccountScreenPage(accountId: Int, mainActivityViewModel: MainActivityViewModel = viewModel()) {
-    val account = accounts[accountId]
-    val emailText = rememberSaveable { mutableStateOf(account.email) }
-    val passwordText = rememberSaveable { mutableStateOf(account.password) }
+fun AccountScreenPage(viewModel: MainActivityViewModel = viewModel()) {
+    val account = viewModel.account.collectAsState().value
+    val emailText = rememberSaveable{ mutableStateOf(account.email) }
+    val passwordText = rememberSaveable{ mutableStateOf(account.password) }
     val scrollState = rememberScrollState()
 
     Column(
@@ -57,11 +63,11 @@ fun AccountScreenPage(accountId: Int, mainActivityViewModel: MainActivityViewMod
                 verticalArrangement = Arrangement.Center
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_outline_star_outline_24),
+                    painter = painterResource(R.drawable.baseline_star_24),
                     modifier = Modifier
                         .size(50.dp),
                     contentDescription = null,
-                    tint = Color.LightGray
+                    tint = if (account.points >= 100) Color.Yellow else Color.LightGray
                 )
 
                 Row(
@@ -141,20 +147,3 @@ fun AccountScreenPage(accountId: Int, mainActivityViewModel: MainActivityViewMod
         )
     }
 }
-
-val accounts = listOf(
-    Account(
-        name = "John Doe",
-        email = "johndoe@gmail.com",
-        password = "password",
-        id = 0,
-        points = 0,
-    ),
-    Account(
-        name = "Jane Doe",
-        email = "janedoe@gmail.com",
-        password = "password",
-        id = 1,
-        points = 100,
-    )
-)

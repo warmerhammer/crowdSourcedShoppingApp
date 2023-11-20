@@ -34,11 +34,12 @@ fun ItemViewPage(
 ) {
 
     val groceryItem = mainActivityViewModel.getGroceryItem(groceryItemID.toLong())
-    val comments = mainActivityViewModel.comments.collectAsState().value.filter {comment ->
+    val comments = mainActivityViewModel.comments.collectAsState().value.filter { comment ->
         comment.itemId == groceryItemID.toLong()
     }
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberLazyListState()
+    val numberOfUpVotes = rememberSaveable { mutableStateOf(groceryItem.upvotes) }
     mainActivityViewModel.setCurrentPage("itemview")
 
     BackdropScaffold(
@@ -47,12 +48,19 @@ fun ItemViewPage(
         appBar = { /*TODO*/ },
         backLayerContent = {
             ItemCard(
+                numberOfUpVotes = numberOfUpVotes,
                 numberOfComments = comments.size,
                 groceryItem = groceryItem,
                 onNavigate = { /*TODO*/ },
                 addItemClick = { mainActivityViewModel.addShoppingCartItem(groceryItem) },
-                upvoteItem = { mainActivityViewModel.upvoteItem(groceryItem) },
-                downvoteItem = { mainActivityViewModel.downvoteItem(groceryItem) },
+                upvoteItem = {
+                    mainActivityViewModel.upvoteItem(groceryItem)
+                    numberOfUpVotes.value++
+                },
+                downvoteItem = {
+                    mainActivityViewModel.downvoteItem(groceryItem)
+                    numberOfUpVotes.value--
+                },
                 onAddTag = { onAddTag(groceryItemID) },
             )
         },

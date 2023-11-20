@@ -1,47 +1,67 @@
 package com.warmerhammer.crowdsourceshoppingapp
 
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.warmerhammer.crowdsourceshoppingapp.data.Account
 import com.warmerhammer.crowdsourceshoppingapp.data.Comment
 import com.warmerhammer.crowdsourceshoppingapp.data.GroceryItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor() : ViewModel() {
+    private val _account = MutableStateFlow(accounts[0])
+    val account: StateFlow<Account> = _account
+
+    val _masterShopperPoints = MutableStateFlow(account.value.points)
+    val masterShopperPoints: StateFlow<Int> = _masterShopperPoints
+
     private val _currentpage = MutableStateFlow("homescreen")
-    val currentpage: StateFlow<String> = _currentpage.asStateFlow()
+    val currentpage: StateFlow<String> = _currentpage
     fun setCurrentPage(destination: String) {
         _currentpage.value = destination
     }
 
-    private val _currentPoints = MutableStateFlow(0)
-    val currentPoints: StateFlow<Int> = _currentPoints.asStateFlow()
-    fun setCurrentPoints(points: Int) {
-        _currentPoints.value = points
-    }
-
     private val _shoppingCartItems = MutableStateFlow(listOf<GroceryItem>())
-    val shoppingCartItems: StateFlow<List<GroceryItem>> = _shoppingCartItems.asStateFlow()
-    fun addShoppingCartItem(item: GroceryItem) {
-        _shoppingCartItems.value += item
+    val shoppingCartItems: StateFlow<List<GroceryItem>> = _shoppingCartItems
+
+    // List of Grocery Items - START
+    private val _items = MutableStateFlow(groceryItems)
+    val items: StateFlow<List<GroceryItem>> = _items
+    fun sortByNewest() {
+        _items.value = groceryItems.sortedByDescending { it.id }.toMutableList()
     }
 
-    private val _items = MutableStateFlow(groceryItems)
-    val items: StateFlow<List<GroceryItem>> = _items.asStateFlow()
+    fun sortByLeastVotes() {
+        _items.value = groceryItems.sortedBy { it.upvotes }.toMutableList()
+    }
+
+    fun sortByMostVotes() {
+        _items.value = groceryItems.sortedByDescending { it.upvotes }.toMutableList()
+    }
     fun upvoteItem(item: GroceryItem) {
         val index = _items.value.indexOf(item)
-        _items.value[index].upvotes += 1
-        Log.i("MainActivityViewModel", "upvoteItem: ${_items.value[index].upvotes}")
-    }
+        groceryItems[index].upvotes += 1
+        _items.value = groceryItems
+        // update master shopper points
+        _masterShopperPoints.value = _masterShopperPoints.value.plus(1)
+        _account.value = _account.value.apply { points += 1 }
 
+    }
     fun downvoteItem(item: GroceryItem) {
         val index = _items.value.indexOf(item)
         _items.value[index].upvotes -= 1
+        // update master shopper points
+        if (_account.value.points >= 0) {
+            _masterShopperPoints.value -= 1
+            _account.value = _account.value.apply { points -= 1 }
+        }
+    }
+
+    fun addShoppingCartItem(item: GroceryItem) {
+        _shoppingCartItems.value += item
     }
 
     fun getGroceryItem(id: Long): GroceryItem {
@@ -53,12 +73,16 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         _items.value[index] = item
     }
 
+    // List of Grocery Items - END
+
+
     private val _comments = MutableStateFlow(savedComments)
-    val comments: StateFlow<List<Comment>> = _comments.asStateFlow()
+    val comments: StateFlow<List<Comment>> = _comments
 
     fun getComments(itemId: Long) {
         _comments.value = savedComments.filter { it.itemId == itemId }
     }
+
     fun addBlankComment(comment: Comment) {
         if (!_comments.value.last().isEditable) {
             savedComments += comment
@@ -72,15 +96,15 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         _comments.value = savedComments
     }
 
-    fun  saveComment(commentText: String, commentId: Long) {
-        val index = _comments.value.indexOfFirst{it.commentId == commentId}
+    fun saveComment(commentText: String, commentId: Long) {
+        val index = _comments.value.indexOfFirst { it.commentId == commentId }
         savedComments[index].comment = commentText
         savedComments[index].isEditable = false
         _comments.value = savedComments
     }
 
     private val _tagsPerItem = MutableStateFlow(listOf<String>())
-    val tagsPerItem : StateFlow<List<String>> = _tagsPerItem.asStateFlow()
+    val tagsPerItem: StateFlow<List<String>> = _tagsPerItem
     fun addTagPerItem(itemId: Long, tag: String) {
         val index = groceryItems.indexOfFirst { it.id == itemId }
         groceryItems[index].tags.add(tag)
@@ -90,10 +114,12 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
     fun getTagsPerItem(itemId: Long) {
         _tagsPerItem.value = groceryItems.filter { it.id == itemId }[0].tags
     }
+
+
 }
 
 
-var groceryItems = arrayListOf<GroceryItem>(
+var groceryItems = mutableListOf<GroceryItem>(
     GroceryItem(
         name = "Banana",
         description = "A yellow fruit",
@@ -141,8 +167,26 @@ var savedComments = listOf(
         itemId = 0L,
         userId = 0
     ),
-    Comment("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare massa eget egestas purus viverra accumsan in nisl. Morbi tristique senectus et netus et malesuada fames ac turpis. Tincidunt lobortis feugiat vivamus at augue eget. Rhoncus aenean vel elit scelerisque mauris pellentesque pulvinar. Netus et malesuada fames ac turpis egestas sed. Tristique nulla aliquet enim tortor. Nisl nisi scelerisque eu ultrices vitae. Sed turpis tincidunt id aliquet risus feugiat. In fermentum et sollicitudin ac orci phasellus egestas tellus rutrum. Libero volutpat sed cras ornare arcu dui. In iaculis nunc sed augue lacus viverra vitae congue eu. Aenean sed adipiscing diam donec adipiscing tristique risus nec. Netus et malesuada fames ac turpis egestas. In ante metus dictum at. Ut placerat orci nulla pellentesque dignissim enim. Tincidunt vitae semper quis lectus nulla at volutpat diam ut.",
+    Comment(
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare massa eget egestas purus viverra accumsan in nisl. Morbi tristique senectus et netus et malesuada fames ac turpis. Tincidunt lobortis feugiat vivamus at augue eget. Rhoncus aenean vel elit scelerisque mauris pellentesque pulvinar. Netus et malesuada fames ac turpis egestas sed. Tristique nulla aliquet enim tortor. Nisl nisi scelerisque eu ultrices vitae. Sed turpis tincidunt id aliquet risus feugiat. In fermentum et sollicitudin ac orci phasellus egestas tellus rutrum. Libero volutpat sed cras ornare arcu dui. In iaculis nunc sed augue lacus viverra vitae congue eu. Aenean sed adipiscing diam donec adipiscing tristique risus nec. Netus et malesuada fames ac turpis egestas. In ante metus dictum at. Ut placerat orci nulla pellentesque dignissim enim. Tincidunt vitae semper quis lectus nulla at volutpat diam ut.",
         itemId = 1L,
         userId = 1
+    )
+)
+
+val accounts = listOf(
+    Account(
+        name = "John Doe",
+        email = "johndoe@gmail.com",
+        password = "password",
+        id = 0,
+        points = 100,
+    ),
+    Account(
+        name = "Jane Doe",
+        email = "janedoe@gmail.com",
+        password = "password",
+        id = 1,
+        points = 100,
     )
 )

@@ -26,8 +26,8 @@ fun NavHost(
     ) {
         composable(HomePage.route) {
             HomePage(
-                onNavigate = { destinaton, id ->
-                    when (destinaton) {
+                onNavigate = { destination, id ->
+                    when (destination) {
                         "ItemView" -> navController.navigate("${ItemView.route}/$id")
                         "TagScreen" -> navController.navigate("${TagScreen.route}/$id")
                     }
@@ -47,15 +47,9 @@ fun NavHost(
                 navController.navigate("${TagScreen.route}/$itemId")
             }
         }
-        composable(
-            route = AccountScreen.routeWithArgs,
-            arguments = AccountScreen.accountScreenArguments
-        ) { backStackEntry ->
+        composable(AccountScreen.route) {
             AccountScreenPage(
-                accountId = backStackEntry.arguments?.getInt(
-                    "accountId"
-                )!!,
-                mainActivityViewModel = viewModel
+                viewModel = viewModel
             )
         }
         composable(ShoppingCartScreen.route) {
@@ -72,7 +66,7 @@ fun NavHost(
 
         composable(
             route = TagScreen.routeWithArgs,
-            arguments = ItemView.arguments
+            arguments = TagScreen.arguments
         ) { backStackEntry ->
             TagScreen(
                 viewModel = viewModel,

@@ -22,11 +22,6 @@ object ItemView : ScreenDestination {
 
 object AccountScreen : ScreenDestination {
     override val route = "accountscreen"
-    const val accountId = "accountId"
-    val routeWithArgs = "$route/{$accountId}"
-    val accountScreenArguments = listOf(
-        navArgument(accountId) { type = NavType.IntType }
-    )
 }
 
 object ShoppingCartScreen : ScreenDestination {
