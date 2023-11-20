@@ -85,9 +85,11 @@ fun MainScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.baseline_star_24),
+                            painter = if (masterShopperPoints.value >= 100) painterResource(R.drawable.baseline_star_24) else painterResource(
+                                R.drawable.ic_outline_star_outline_24
+                            ),
                             contentDescription = null,
-                            tint = MaterialTheme.colors.secondary,
+                            tint = if (masterShopperPoints.value >= 100) MaterialTheme.colors.secondary else Color.LightGray,
                             modifier = Modifier.size(25.dp)
                         )
                         Text(
