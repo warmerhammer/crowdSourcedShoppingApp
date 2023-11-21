@@ -24,12 +24,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.warmerhammer.crowdsourceshoppingapp.MainActivityViewModel
-import com.warmerhammer.crowdsourceshoppingapp.data.comment
+import com.warmerhammer.crowdsourceshoppingapp.data.Comment
 
 @Composable
 fun CurrentComment(
     viewModel: MainActivityViewModel,
-    comment: comment,
+    comment: Comment,
     saveComment: () -> Unit
 ) {
     val currentCommentText = rememberSaveable { mutableStateOf("") }
@@ -78,7 +78,7 @@ fun CurrentComment(
                 )
             }
             TextButton(onClick = {
-                viewModel.saveComment(comment.itemId, currentCommentText.value)
+                viewModel.saveComment(currentCommentText.value, comment.commentId)
                 saveComment()
             }) {
                 Text(
