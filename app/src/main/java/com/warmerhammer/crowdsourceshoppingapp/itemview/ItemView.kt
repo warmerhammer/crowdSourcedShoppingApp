@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.warmerhammer.crowdsourceshoppingapp.MainActivityViewModel
 import com.warmerhammer.crowdsourceshoppingapp.R
-import com.warmerhammer.crowdsourceshoppingapp.data.comment
+import com.warmerhammer.crowdsourceshoppingapp.data.Comment
 import com.warmerhammer.crowdsourceshoppingapp.ui.components.ItemCard
 import kotlinx.coroutines.launch
 
@@ -30,13 +30,16 @@ import kotlinx.coroutines.launch
 fun ItemViewPage(
     groceryItemID: String,
     mainActivityViewModel: MainActivityViewModel = viewModel(),
-    onAddTag : (itemId: String) -> Unit,
+    onAddTag: (itemId: String) -> Unit,
 ) {
 
     val groceryItem = mainActivityViewModel.getGroceryItem(groceryItemID.toLong())
-    val comments = mainActivityViewModel.comments.collectAsState().value
+    val comments = mainActivityViewModel.comments.collectAsState().value.filter { comment ->
+        comment.itemId == groceryItemID.toLong()
+    }
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberLazyListState()
+    val numberOfUpVotes = rememberSaveable { mutableStateOf(groceryItem.upvotes) }
     mainActivityViewModel.setCurrentPage("itemview")
 
     BackdropScaffold(
@@ -45,11 +48,19 @@ fun ItemViewPage(
         appBar = { /*TODO*/ },
         backLayerContent = {
             ItemCard(
+                numberOfUpVotes = numberOfUpVotes,
+                numberOfComments = comments.size,
                 groceryItem = groceryItem,
                 onNavigate = { /*TODO*/ },
                 addItemClick = { mainActivityViewModel.addShoppingCartItem(groceryItem) },
-                upvoteItem = { mainActivityViewModel.upvoteItem(groceryItem) },
-                downvoteItem = { mainActivityViewModel.downvoteItem(groceryItem) },
+                upvoteItem = {
+                    mainActivityViewModel.upvoteItem(groceryItem)
+                    numberOfUpVotes.value++
+                },
+                downvoteItem = {
+                    mainActivityViewModel.downvoteItem(groceryItem)
+                    numberOfUpVotes.value--
+                },
                 onAddTag = { onAddTag(groceryItemID) },
             )
         },
@@ -86,8 +97,7 @@ fun ItemViewPage(
                         verticalArrangement = Arrangement.spacedBy(7.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 20.dp),
-
-                        ) {
+                    ) {
                         items(comments.size) { index ->
                             Row(
                                 Modifier
@@ -97,16 +107,20 @@ fun ItemViewPage(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
                             ) {
-                                val isEditable = rememberSaveable{ mutableStateOf(comments[index].isEditable) }
+                                val isEditable =
+                                    rememberSaveable { mutableStateOf(comments[index].isEditable) }
                                 if (isEditable.value) {
-                                    Column(modifier = Modifier
-                                        .fillMaxHeight()
-                                        .fillMaxWidth()) {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .fillMaxWidth()
+                                    ) {
                                         CurrentComment(
                                             viewModel = mainActivityViewModel,
                                             comment = comments[index]
                                         ) {
                                             isEditable.value = false
+
                                         }
                                     }
                                 } else {
@@ -122,9 +136,10 @@ fun ItemViewPage(
                 Row(Modifier.weight(.25f)) {
                     IconButton(onClick = {
                         mainActivityViewModel.addBlankComment(
-                            comment(
+                            Comment(
                                 comment = "",
                                 userId = 0,
+                                itemId = groceryItemID.toLong(),
                                 isEditable = true
                             )
                         )

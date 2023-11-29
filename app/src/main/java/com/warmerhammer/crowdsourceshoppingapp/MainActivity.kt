@@ -127,7 +127,7 @@ fun App(
                     selected = false,
                     onClick = {
                         viewModel.setCurrentPage("accountscreen")
-                        navController.navigate("${AccountScreen.route}/0")
+                        navController.navigate(AccountScreen.route)
                         scope.launch {
                             drawerState.close()
                         }
