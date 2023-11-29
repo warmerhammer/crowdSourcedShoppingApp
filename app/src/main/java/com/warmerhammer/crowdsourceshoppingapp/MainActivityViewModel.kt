@@ -2,12 +2,18 @@ package com.warmerhammer.crowdsourceshoppingapp
 
 
 import androidx.lifecycle.ViewModel
-import com.warmerhammer.crowdsourceshoppingapp.data.Account
-import com.warmerhammer.crowdsourceshoppingapp.data.Comment
-import com.warmerhammer.crowdsourceshoppingapp.data.GroceryItem
+import com.google.gson.GsonBuilder
+import com.warmerhammer.crowdsourceshoppingapp.network.APIServices
+import com.warmerhammer.crowdsourceshoppingapp.network.RetrofitService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import com.warmerhammer.crowdsourceshoppingapp.data.Account
+import com.warmerhammer.crowdsourceshoppingapp.data.Comment
+import com.warmerhammer.crowdsourceshoppingapp.data.GroceryItem
 import javax.inject.Inject
 
 @HiltViewModel
