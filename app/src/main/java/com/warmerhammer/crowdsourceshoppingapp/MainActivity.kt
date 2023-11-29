@@ -2,6 +2,7 @@ package com.warmerhammer.crowdsourceshoppingapp
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -21,14 +22,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
+import com.google.gson.GsonBuilder
 import com.warmerhammer.crowdsourceshoppingapp.mainscreen.MainScreen
+import com.warmerhammer.crowdsourceshoppingapp.network.APIServices
+import com.warmerhammer.crowdsourceshoppingapp.network.RetrofitService
 import com.warmerhammer.crowdsourceshoppingapp.ui.theme.CrowdSourceShoppingAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +51,19 @@ class MainActivity : ComponentActivity() {
                 App(viewModel)
             }
         }
+
+        // Test Call
+        val service = Retrofit.Builder()
+            .baseUrl("https://shoppingapp-d56022f156a4.herokuapp.com/")
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+            .build()
+            .create(APIServices::class.java)
+        CoroutineScope(IO).launch {
+            val product = service.getProductID(id = 2)
+            Log.d("MainActivity", "OnCreate: $product")
+        }
     }
+
 }
 
 @RequiresApi(Build.VERSION_CODES.N)

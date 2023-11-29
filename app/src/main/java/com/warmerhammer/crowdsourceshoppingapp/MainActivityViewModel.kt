@@ -3,16 +3,22 @@ package com.warmerhammer.crowdsourceshoppingapp
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.google.gson.GsonBuilder
 import com.warmerhammer.crowdsourceshoppingapp.data.GroceryItem
 import com.warmerhammer.crowdsourceshoppingapp.data.comment
+import com.warmerhammer.crowdsourceshoppingapp.network.APIServices
+import com.warmerhammer.crowdsourceshoppingapp.network.RetrofitService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor() : ViewModel() {
+
     private val _currentpage = MutableStateFlow("homescreen")
     val currentpage: StateFlow<String> = _currentpage.asStateFlow()
     fun setCurrentPage(destination: String) {
